@@ -11,14 +11,32 @@ const subjectRouter = require("./routes/subject");
 const authMiddleware = require("./middlewares/auth");
 require("dotenv").config();
 
+const express = require("express");
+const cors = require("cors");
+
 const app = express();
+
 app.use(express.json());
+
 app.use(
   cors({
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: "https://pdp-erp.vercel.app", // frontend domenini aniq yoz
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+// preflight (OPTIONS) uchun alohida handler
+app.options(
+  "*",
+  cors({
+    origin: "https://pdp-erp.vercel.app",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+// ROUTES ...
 
 app.use("/test", authMiddleware, testRouter);
 app.use("/teacher", userRouter);
