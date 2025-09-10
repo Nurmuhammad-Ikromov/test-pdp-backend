@@ -265,4 +265,30 @@ router.post("/:classId/assign-teacher/:teacherId", async (req, res) => {
   }
 });
 
+router.delete("/:classId/remove-teacher/:teacherId", async (req, res) => {
+  try {
+    if (req.role !== "director") {
+      return res
+        .status(403)
+        .json({ message: "Faqat direktor o‘qituvchini olib tashlashi mumkin" });
+    }
+
+    const { classId, teacherId } = req.params;
+
+    // Class modelidan o‘qituvchini olib tashlash
+    await Class.findByIdAndUpdate(classId, {
+      $pull: { teachers: teacherId },
+    });
+
+    // User modelidan sinfni olib tashlash
+    await User.findByIdAndUpdate(teacherId, {
+      $pull: { classes: classId },
+    });
+
+    res.json({ message: "O‘qituvchi sinfdan o‘chirildi" });
+  } catch (error) {
+    res.status(500).json({ message: "Error removing teacher", error });
+  }
+});
+
 module.exports = router;

@@ -16,6 +16,7 @@ const { default: mongoose } = require("mongoose");
 router.post("/bulk", async (req, res) => {
   try {
     const { classId, subjectId, changes } = req.body;
+    const teacherId = req.user;
 
     for (const { studentId, date, value } of changes) {
       const normalizedDate = new Date(date).toISOString().split("T")[0];
@@ -36,6 +37,7 @@ router.post("/bulk", async (req, res) => {
             class: classId,
             subject: subjectId,
             date: normalizedDate,
+            teacher: teacherId,
           },
           { value },
           { upsert: true, new: true }
