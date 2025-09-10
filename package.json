@@ -1,0 +1,35 @@
+{
+  "name": "test_app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index",
+    "dev": "nodemon index",
+    "test": "mocha",
+    "migrate:students": "node scripts/midd.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "chai": "^5.1.2",
+    "cookie-session": "^2.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2",
+    "mammoth": "^1.8.0",
+    "mocha": "^11.0.1",
+    "mongoose": "^8.7.3",
+    "msgpack-lite": "^0.1.26",
+    "multer": "^1.4.5-lts.1",
+    "nodemon": "^3.1.7",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "supertest": "^7.0.0",
+    "uuid": "^11.0.5",
+    "xlsx": "^0.18.5"
+  }
+}

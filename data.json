@@ -1,0 +1,114 @@
+{
+    "info": {
+        "_postman_id": "b5d77b3a-14c2-4f76-8d38-2a1f8d1e8e29",
+        "name": "Test API Collection",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Check Test Result",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"response_result\": {\"58b200ba-ce32-49f4-8e3a-7240b92a0cdc\": {\"response\": \"Framework\", \"option\": \"Framework\"}}}"
+                },
+                "url": {
+                    "raw": "http://localhost:3000/check/:id",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "check",
+                        ":id"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Get Test",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:3000/test/:id",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "test",
+                        ":id"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Get User",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:3000/user/:id",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "user",
+                        ":id"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Create Test",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"title\": \"Test Example\", \"encodedData\": \"encoded_test_data_here\"}"
+                },
+                "url": {
+                    "raw": "http://localhost:3000/test",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "test"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Create User",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"first_name\": \"John\", \"last_name\": \"Doe\", \"username\": \"john_doe\", \"role\": \"student\"}"
+                },
+                "url": {
+                    "raw": "http://localhost:3000/user",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "user"
+                    ]
+                }
+            },
+            "response": []
+        }
+    ]
+}
