@@ -20,7 +20,7 @@ app.use(express.json());
 // ✅ CORS konfiguratsiya
 app.use(
   cors({
-    origin: "https://pdp-erp.vercel.app", // faqat frontend domeniga ruxsat
+    origin: "*", // faqat frontend domeniga ruxsat
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
@@ -30,7 +30,7 @@ app.use(
 app.options(
   "*",
   cors({
-    origin: "https://pdp-erp.vercel.app",
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
