@@ -1,83 +1,82 @@
-const express = require('express')
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
-const { User } = require('../models/user') // User modelini import qilish
-require('dotenv').config() // .env faylini o'qish
+const express = require("express");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const { User } = require("../models/user"); // User modelini import qilish
+require("dotenv").config(); // .env faylini o'qish
 
-const router = express.Router()
-
+const router = express.Router();
 
 // 3. Create (Yangi o'qituvchi qo'shish)
-router.post('/', async (req, res) => {
+router.post("/", async (req, res) => {
   try {
-    const { first_name, last_name, username, password } = req.body
+    const { first_name, last_name, username, password } = req.body;
 
     // Parolni hash qilish
-    const hashedPassword = await bcrypt.hash(password, 10)
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const teacher = new User({
       first_name,
       last_name,
       username,
-      role: 'teacher',
-      password: hashedPassword
-    })
+      role: "teacher",
+      password: hashedPassword,
+    });
 
-    await teacher.save()
-    res.status(201).json({ message: 'Teacher created successfully', teacher })
+    await teacher.save();
+    res.status(201).json({ message: "Teacher created successfully", teacher });
   } catch (error) {
-    res.status(500).json({ message: 'Error creating teacher', error })
+    res.status(500).json({ message: "Error creating teacher", error });
   }
-})
+});
 
 // 4. Read (O'qituvchilarni olish)
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const teachers = await User.find({ role: 'teacher' })
-    res.status(200).json(teachers)
+    const teachers = await User.find({ role: "teacher" });
+    res.status(200).json(teachers);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching teachers', error })
+    res.status(500).json({ message: "Error fetching teachers", error });
   }
-})
+});
 
 // 5. Update (O'qituvchini yangilash)
-router.put('/:id', async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
-    const { id } = req.params
-    const updates = req.body
+    const { id } = req.params;
+    const updates = req.body;
 
     const updatedTeacher = await User.findByIdAndUpdate(id, updates, {
-      new: true
-    })
+      new: true,
+    });
 
     if (!updatedTeacher) {
-      return res.status(404).json({ message: 'Teacher not found' })
+      return res.status(404).json({ message: "Teacher not found" });
     }
 
     res
       .status(200)
-      .json({ message: 'Teacher updated successfully', updatedTeacher })
+      .json({ message: "Teacher updated successfully", updatedTeacher });
   } catch (error) {
-    res.status(500).json({ message: 'Error updating teacher', error })
+    res.status(500).json({ message: "Error updating teacher", error });
   }
-})
+});
 
 // 6. Delete (O'qituvchini o'chirish)
-router.delete('/:id', async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
-    const { id } = req.params
+    const { id } = req.params;
 
-    const deletedTeacher = await User.findByIdAndUpdate(id, { status: false })
+    const deletedTeacher = await User.findByIdAndDelete(id);
 
     if (!deletedTeacher) {
-      return res.status(404).json({ message: 'Teacher not found' })
+      return res.status(404).json({ message: "Teacher not found" });
     }
 
-    res.status(200).json({ message: 'Teacher deleted successfully' })
+    res.status(200).json({ message: "Teacher deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting teacher', error })
+    res.status(500).json({ message: "Error deleting teacher", error });
   }
-})
+});
 
 // router.get('/my-exams', async (req, res) => {
 //   let userid = req.user || '67811fe45c20084d6212a2a3'
@@ -87,4 +86,4 @@ router.delete('/:id', async (req, res) => {
 //   } catch (error) {}
 // })
 
-module.exports = router
+module.exports = router;

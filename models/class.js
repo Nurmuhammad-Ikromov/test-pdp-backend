@@ -23,10 +23,17 @@ const classSchema = new mongoose.Schema(
       },
     ],
     teachers: [
-      // 🔥 yangi qo‘shildi
       {
-        type: mongoose.Types.ObjectId,
-        ref: "User",
+        teacher: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User", // teacher
+          required: true,
+        },
+        subject: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Subject", // tanlangan fan
+          required: true,
+        },
       },
     ],
     status: {

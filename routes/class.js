@@ -239,27 +239,50 @@ router.get("/:classId/grades/:studentId", async (req, res) => {
   }
 });
 
-router.post("/:classId/assign-teacher/:teacherId", async (req, res) => {
+// 🔹 Teacher + Subject ni sinfga biriktirish
+router.post("/:classId/assign-teacher", async (req, res) => {
   try {
+    const { classId } = req.params;
+    const { teacherId, subjectId } = req.body;
+
     if (req.role !== "director") {
       return res
         .status(403)
         .json({ message: "Faqat direktor biriktira oladi" });
     }
 
-    const { classId, teacherId } = req.params;
+    // Teacher + Subjectni Class.teachers massiviga qo‘shish
+    const updatedClass = await Class.findByIdAndUpdate(
+      classId,
+      {
+        $push: {
+          teachers: {
+            teacher: teacherId,
+            subject: subjectId,
+          },
+        },
+      },
+      { new: true }
+    )
+      .populate("teachers.teacher", "first_name last_name username")
+      .populate("teachers.subject", "name");
 
-    // Class modeliga qo‘shish
-    await Class.findByIdAndUpdate(classId, {
-      $addToSet: { teachers: teacherId },
+    // Teacher objectga ham class qo‘shish
+    const updatedTeacher = await User.findByIdAndUpdate(
+      teacherId,
+      { $addToSet: { classes: classId } },
+      { new: true }
+    );
+
+    if (!updatedClass)
+      return res.status(404).json({ message: "Class not found" });
+    if (!updatedTeacher)
+      return res.status(404).json({ message: "Teacher not found" });
+
+    res.json({
+      message: "O‘qituvchi fani bilan sinfga biriktirildi",
+      updatedClass,
     });
-
-    // User modeliga qo‘shish
-    await User.findByIdAndUpdate(teacherId, {
-      $addToSet: { classes: classId },
-    });
-
-    res.json({ message: "O‘qituvchi sinfga biriktirildi" });
   } catch (error) {
     res.status(500).json({ message: "Error assigning teacher", error });
   }

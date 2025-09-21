@@ -316,21 +316,33 @@ router.put("/update/:userId", async (req, res) => {
       return res.status(404).json({ message: "Foydalanuvchi topilmadi" });
     }
 
-    // Yangilash uchun obyekt
     const updateFields = { ...otherFields };
 
-    // Parol kelsa, hashlab qo‘shamiz
     if (password) {
       const hashedPassword = await bcrypt.hash(password, 10);
       updateFields.password = hashedPassword;
     }
 
-    // classId kelsa, uni ham qo‘shamiz
-    if (classId) {
+    let oldClassId = existingUser.class;
+
+    // Foydalanuvchini sinfini o'zgartirish
+    if (classId && classId !== String(oldClassId)) {
       updateFields.class = classId;
+
+      // Avval eski sinfdan userni olib tashlash
+      if (oldClassId) {
+        await Class.findByIdAndUpdate(oldClassId, {
+          $pull: { students: userId },
+        });
+      }
+
+      // Yangi sinfga qo‘shish
+      await Class.findByIdAndUpdate(classId, {
+        $addToSet: { students: userId },
+      });
     }
 
-    // Yangilash
+    // Userni yangilash
     await User.findByIdAndUpdate(userId, updateFields);
 
     res
@@ -363,12 +375,10 @@ router.post("/remove-student", async (req, res) => {
     res.status(200).json({ message: "Talaba muvaffaqiyatli o‘chirildi" });
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({
-        message: "Talabani o‘chirishda xatolik yuz berdi",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Talabani o‘chirishda xatolik yuz berdi",
+      error: error.message,
+    });
   }
 });
 

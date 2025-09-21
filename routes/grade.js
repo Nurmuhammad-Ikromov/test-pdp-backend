@@ -54,47 +54,45 @@ router.post("/bulk", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const teacherId = req.user; // siz 1-variant bo'yicha req.user = decoded.id qilgansiz
-    const { studentId, classId, subjectId, date, value } = req.body;
+    const teacherId = req.user;
+    const { studentId, classId, date, value } = req.body;
 
-    if (!studentId || !classId || !subjectId || !date || value == null) {
+    if (!studentId || !classId || !date || value == null) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    // normalize date to start of day (so time parts don't break uniqueness)
+    // normalize date
     const d = new Date(date);
     d.setHours(0, 0, 0, 0);
 
-    // Optional: check existence of student/class/subject (light validation)
-    // (skip if you trust frontend)
     const student = await User.findById(studentId);
     if (!student) return res.status(404).json({ message: "Student not found" });
 
     const cls = await Class.findById(classId);
     if (!cls) return res.status(404).json({ message: "Class not found" });
 
-    const subject = await Subject.findById(subjectId);
-    if (!subject) return res.status(404).json({ message: "Subject not found" });
+    // Teacherning shu classdagi subjectini olish
+    const teacherObj = cls.teachers.find(
+      (t) => t.teacher.toString() === teacherId.toString()
+    );
+    if (!teacherObj)
+      return res
+        .status(400)
+        .json({ message: "Teacher not assigned to this class" });
 
-    // Upsert: agar shu student/class/subject/date uchun mavjud bo'lsa update, aks holda create
+    const subjectId = teacherObj.subject;
+
+    // Grade upsert
     const filter = {
       student: studentId,
       class: classId,
       subject: subjectId,
       date: d,
     };
-
     const update = {
-      $set: {
-        value,
-        teacher: teacherId,
-        updatedAt: new Date(),
-      },
-      $setOnInsert: {
-        createdAt: new Date(),
-      },
+      $set: { value, teacher: teacherId, updatedAt: new Date() },
+      $setOnInsert: { createdAt: new Date() },
     };
-
     const opts = { new: true, upsert: true };
 
     const grade = await Grade.findOneAndUpdate(filter, update, opts)
@@ -102,12 +100,9 @@ router.post("/", async (req, res) => {
       .populate("subject", "name")
       .populate("teacher", "first_name last_name");
 
-    return res.status(200).json({ message: "Grade saved", grade });
+    res.status(200).json({ message: "Grade saved", grade });
   } catch (err) {
-    console.error("POST /grades error:", err);
-    return res
-      .status(500)
-      .json({ message: "Error saving grade", error: err.message });
+    res.status(500).json({ message: "Error saving grade", error: err.message });
   }
 });
 
