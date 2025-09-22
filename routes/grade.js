@@ -107,15 +107,16 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/class/:classId", async (req, res) => {
+  console.log(req.user);
+
   try {
     const { classId } = req.params;
-    console.log("classId param:", classId);
 
     if (!mongoose.Types.ObjectId.isValid(classId)) {
       return res.status(400).json({ message: "Invalid classId" });
     }
 
-    const grades = await Grade.find({ class: classId })
+    const grades = await Grade.find({ class: classId, teacher: req.user })
       .populate("student", "first_name last_name")
       .populate("subject", "name")
       .populate("teacher", "first_name last_name")
