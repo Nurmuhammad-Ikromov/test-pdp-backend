@@ -13,7 +13,7 @@ const MONGO_URI =
   "mongodb+srv://nurmuhammadikromov58:Nurmuhammad1612@chat.g0qtc0r.mongodb.net/?retryWrites=true&w=majority&appName=Chat";
 
 // classId har doim shu bo‘ladi (siz aytgansiz)
-const CLASS_ID = new mongoose.Types.ObjectId("68d057e52e447eacffda6ff9");
+const CLASS_ID = new mongoose.Types.ObjectId("68d057ec2e447eacffda6ffd");
 
 // --- Parol generator ---
 function randPassword(len = 8) {
@@ -69,8 +69,8 @@ async function importFromExcel(filePath) {
 
     // F.I.Sh bo‘lishi: [Familiya] [Ism] [Otasining ismi...]
     const parts = fish.split(/\s+/);
-    const lastName = parts[0] || "";
-    const firstName = parts[1] || "";
+    const lastName = parts[0].toUpperCase() || "";
+    const firstName = parts[1].toUpperCase() || "";
     const fullName = parts.join(" ");
 
     const username = await generateUniqueUsername(lastName, firstName);

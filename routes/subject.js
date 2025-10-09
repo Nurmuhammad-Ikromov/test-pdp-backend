@@ -171,7 +171,7 @@ router.get("/my-subjects", async (req, res) => {
           (student) => {
             const studentGrades = grades
               .filter(
-                (g) => g.student._id.toString() === student._id.toString()
+                (g) => g.student?._id.toString() === student?._id.toString()
               )
               .map((g) => ({
                 _id: g._id,
