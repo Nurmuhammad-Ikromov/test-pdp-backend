@@ -153,4 +153,23 @@ router.get("/student/:studentId", async (req, res) => {
   }
 });
 
+router.get("/my", async (req, res) => {
+  try {
+    const studentId = req.user; // tokendagi id
+
+    // ensure role maybe student, but we can still return
+    const grades = await Grade.find({ student: studentId })
+      .populate("subject", "name")
+      .populate("teacher", "first_name last_name")
+      .sort({ date: -1 });
+
+    return res.status(200).json({ grades });
+  } catch (err) {
+    console.error("GET /grades/my error:", err);
+    return res
+      .status(500)
+      .json({ message: "Error fetching your grades", error: err.message });
+  }
+});
+
 module.exports = router;
