@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const gradeSchema = new mongoose.Schema(
+const attendanceSchema = new mongoose.Schema(
   {
     student: {
       type: mongoose.Schema.Types.ObjectId,
@@ -12,11 +12,6 @@ const gradeSchema = new mongoose.Schema(
       ref: "Class",
       required: true,
     },
-    teacher: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
     subject: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Subject",
@@ -26,14 +21,19 @@ const gradeSchema = new mongoose.Schema(
     // ISO DATE format
     date: { type: Date, required: true },
 
-    value: { type: Number, min: 0, max: 5, required: true },
+    status: {
+      type: String,
+      enum: ["present", "late", "absent"],
+      default: "absent",
+    },
+    auto_marked: { type: Boolean, default: true },
   },
   { timestamps: true }
 );
 
-gradeSchema.index(
+attendanceSchema.index(
   { student: 1, class: 1, subject: 1, date: 1 },
   { unique: true }
 );
 
-module.exports = mongoose.model("Grade", gradeSchema);
+module.exports = mongoose.model("Attendance", attendanceSchema);

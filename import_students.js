@@ -13,7 +13,7 @@ const MONGO_URI =
   "mongodb+srv://nurmuhammadikromov58:Nurmuhammad1612@chat.g0qtc0r.mongodb.net/?retryWrites=true&w=majority&appName=Chat";
 
 // classId har doim shu bo‘ladi (siz aytgansiz)
-const CLASS_ID = new mongoose.Types.ObjectId("68d057ec2e447eacffda6ffd");
+const CLASS_ID = new mongoose.Types.ObjectId("68d12344ca8792c51a84494d");
 
 // --- Parol generator ---
 function randPassword(len = 8) {

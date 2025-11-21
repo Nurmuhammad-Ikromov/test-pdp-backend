@@ -43,19 +43,30 @@ router.get("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const updates = req.body;
+    const updates = { ...req.body };
 
-    const updatedTeacher = await User.findByIdAndUpdate(id, updates, {
-      new: true,
-    });
+    // Agar password o'zgartirilayotgan bo'lsa, hash qilish
+    if (updates.password) {
+      updates.password = await bcrypt.hash(updates.password, 10);
+
+      console.log(updates.password);
+      
+    }
+
+    const updatedTeacher = await User.findByIdAndUpdate(
+      id,
+      { $set: updates },
+      { new: true, runValidators: true }
+    );
 
     if (!updatedTeacher) {
       return res.status(404).json({ message: "Teacher not found" });
     }
 
-    res
-      .status(200)
-      .json({ message: "Teacher updated successfully", updatedTeacher });
+    res.status(200).json({
+      message: "Teacher updated successfully",
+      updatedTeacher,
+    });
   } catch (error) {
     res.status(500).json({ message: "Error updating teacher", error });
   }
